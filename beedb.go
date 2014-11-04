@@ -11,7 +11,7 @@ import (
 )
 
 var OnDebug = false
-var PluralizeTableNames = false
+var PluralizeTableNames = true
 
 type Model struct {
 	Db              *sql.DB
@@ -32,7 +32,7 @@ type Model struct {
 }
 
 /**
- * Add New sql.DB in the future i will add ConnectionPool.Get()
+* Add New sql.DB in the future i will add ConnectionPool.Get()
  */
 func New(db *sql.DB, options ...interface{}) (m Model) {
 	if len(options) == 0 {
@@ -275,7 +275,7 @@ func (orm *Model) FindMap() (resultsSlice []map[string][]byte, err error) {
 			case reflect.String:
 				str = vv.String()
 				result[key] = []byte(str)
-			//时间类型
+				//时间类型
 			case reflect.Struct:
 				str = rawValue.Interface().(time.Time).Format("2006-01-02 15:04:05.000 -0700")
 				result[key] = []byte(str)
