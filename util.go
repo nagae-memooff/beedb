@@ -167,7 +167,7 @@ func scanMapElement(fieldv reflect.Value, field reflect.StructField, objMap map[
 			return errors.New("arg " + sqlFieldName + " as int: " + err.Error())
 		}
 		v = x
-	//Supports Time type only (for now)
+		//Supports Time type only (for now)
 	case reflect.Struct:
 		if fieldv.Type().String() != "time.Time" {
 			return errors.New("unsupported struct type in Scan: " + fieldv.Type().String())
@@ -259,15 +259,23 @@ func StructName(s interface{}) string {
 
 func getTableName(s interface{}) string {
 	v := reflect.TypeOf(s)
+	var tablename string
 	if v.Kind() == reflect.String {
 		s2, _ := s.(string)
-		return snakeCasedName(s2)
+		tablename = snakeCasedName(s2)
+	} else {
+		tn := scanTableName(s)
+		if len(tn) > 0 {
+			tablename = tn
+			return tablename
+		} else {
+			tablename = getTableName(StructName(s))
+		}
 	}
-	tn := scanTableName(s)
-	if len(tn) > 0 {
-		return tn
+	if PluralizeTableNames {
+		tablename = pluralizeString(tablename)
 	}
-	return getTableName(StructName(s))
+	return tablename
 }
 
 func scanTableName(s interface{}) string {
