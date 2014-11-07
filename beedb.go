@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+var dbconfig = [2]string{}
 var OnDebug = false
 var PluralizeTableNames = true
 
@@ -43,6 +44,21 @@ func New(db *sql.DB, options ...interface{}) (m Model) {
 		m = Model{Db: db, ColumnStr: "id", PrimaryKey: "id", QuoteIdentifier: "", ParamIdentifier: options[0].(string), ParamIteration: 1}
 	}
 	return
+}
+
+func SetDatabase(driverName string, dataSourceName string) {
+	dbconfig = [2]string{driverName, dataSourceName}
+}
+
+func GetDatabase() (databaseConfig [2]string) {
+	return dbconfig
+}
+
+func NewModel(model interface{}) (m Model) {
+	db, _ := sql.Open(dbconfig[0], dbconfig[1])
+	newmodel := New(db)
+	newmodel.SetTable(getTableName(model))
+	return newmodel
 }
 
 func (orm *Model) SetTable(tbname string) *Model {
