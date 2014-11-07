@@ -263,17 +263,16 @@ func getTableName(s interface{}) string {
 	if v.Kind() == reflect.String {
 		s2, _ := s.(string)
 		tablename = snakeCasedName(s2)
+		if PluralizeTableNames {
+			tablename = pluralizeString(tablename)
+		}
 	} else {
 		tn := scanTableName(s)
 		if len(tn) > 0 {
 			tablename = tn
-			return tablename
 		} else {
 			tablename = getTableName(StructName(s))
 		}
-	}
-	if PluralizeTableNames {
-		tablename = pluralizeString(tablename)
 	}
 	return tablename
 }
