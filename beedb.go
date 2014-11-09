@@ -30,6 +30,8 @@ type Model struct {
 	QuoteIdentifier string
 	ParamIdentifier string
 	ParamIteration  int
+	model_struct    interface{}
+	//   model_slice     []interface{}
 }
 
 /**
@@ -56,9 +58,12 @@ func GetDatabase() (databaseConfig [2]string) {
 
 func NewModel(model interface{}) (m Model) {
 	db, _ := sql.Open(dbconfig[0], dbconfig[1])
-	newmodel := New(db)
-	newmodel.SetTable(getTableName(model))
-	return newmodel
+	orm := New(db)
+	//   model := reflect.New(reflect.ValueOf(model_slice).Elem().Type())
+	orm.SetTable(getTableName(model))
+	//   orm.model_slice  = model_slice
+	orm.model_struct = model
+	return orm
 }
 
 func (orm *Model) SetTable(tbname string) *Model {
