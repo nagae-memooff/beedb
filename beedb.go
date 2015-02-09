@@ -11,6 +11,7 @@ import (
 )
 
 var dbconfig = [2]string{}
+var db *sql.DB
 var OnDebug = false
 var PluralizeTableNames = true
 
